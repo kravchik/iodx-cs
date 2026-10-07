@@ -1,0 +1,11 @@
+bin/
+obj/
+artifacts/
+TestResults/
+codegen/target/
+.idea/
+.vs/
+*.user
+*.suo
+*.trx
+.DS_Store

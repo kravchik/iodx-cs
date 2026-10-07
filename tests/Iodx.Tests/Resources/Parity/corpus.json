@@ -1,0 +1,26 @@
+[
+  { "id": "empty", "source": "" },
+  {
+    "id": "literals",
+    "source": "true false null word 42 -0xFF 9223372036854775807L 1.5 2d 3f"
+  },
+  { "id": "nested-classes", "source": "(outer(inner(value)))" },
+  {
+    "id": "comments-and-strings",
+    "source": "// heading\n/*details*/ 'old\\sscroll' \"Say \\\"open\\\"\" 'emoji: \\uD83D\\uDE00'"
+  },
+  { "id": "unicode-ranges", "source": "\n\tRune(name = 😀 value = 'A\\u0042')" },
+  { "id": "longest-match", "source": "-0xFFL 1.5e-2d // note\n/* block */ == name" },
+  { "id": "invalid-region", "source": "@# name" },
+  { "id": "leading-zero", "source": "012" },
+  { "id": "incomplete-hex", "source": "0x" },
+  { "id": "extra-right-paren", "source": "hello)" },
+  { "id": "incomplete-class", "source": "(" },
+  { "id": "truncated-log", "source": "valid\nvalid\n(incomplete" },
+  { "id": "integer-overflow", "source": "2147483648" },
+  { "id": "malformed-unicode", "source": "'bad\\u12G4'" },
+  { "id": "unknown-escape", "source": "'bad\\q'" },
+  { "id": "formatting-cases", "fixture": "formatting.cases.iodx" },
+  { "id": "formatting-sql-style", "fixture": "formatting.cases.sql.style.iodx" },
+  { "id": "formatting", "fixture": "formatting.iodx" }
+]

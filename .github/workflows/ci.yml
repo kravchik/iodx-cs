@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            5.0.x
+            10.0.x
+      - run: dotnet restore Iodx.sln
+      - run: dotnet build Iodx.sln --configuration Release --no-restore
+      - run: dotnet test Iodx.sln --configuration Release --no-build --no-restore --collect:"XPlat Code Coverage"
+      - run: scripts/package-smoke.sh
+        shell: bash
+
+  generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: kravchik/iodx
+          path: iodx-upstream
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: codegen/pom.xml
+      - name: Verify upstream mirror
+        run: scripts/sync-from-java.sh --check
+        env:
+          IODX_SOURCE_ROOT: ${{ github.workspace }}/iodx-upstream
+      - name: Verify generated parser
+        run: scripts/check-generated.sh
+      - name: Verify clean worktree
+        run: git diff --exit-code

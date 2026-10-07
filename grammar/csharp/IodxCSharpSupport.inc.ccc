@@ -1,0 +1,88 @@
+// C# implementation of the CST construction API used by IodxProductions.inc.ccc.
+
+INJECT IodxCstParser :
+{
+    private Object cstBeginNode() {
+        return getToken(0);
+    }
+
+    private Object cstNewList() {
+        return CstSupport.newList();
+    }
+
+    private void cstListAdd(Object list, Object value) {
+        ((ListAdapter<IodxCst>) list).add((IodxCst) value);
+    }
+
+    private IodxCst cstListBody(Object start, Object children) {
+        Token begin = (Token) start;
+        Token end = getToken(0);
+        return CstSupport.listBody(begin, end, (ListAdapter<IodxCst>) children);
+    }
+
+    private IodxCst cstSingleLineComment(Token token) {
+        return cstTokenNode("COMMENT_SINGLE_LINE", token, token.toString());
+    }
+
+    private IodxCst cstMultiLineComment(Token token) {
+        return cstTokenNode("COMMENT_MULTI_LINE", token, token.toString());
+    }
+
+    private IodxCst cstInteger(Token token) {
+        return cstTokenNode("INTEGER_LITERAL", token, token.toString());
+    }
+
+    private IodxCst cstFloatingPoint(Token token) {
+        return cstTokenNode("FLOATING_POINT_LITERAL", token, token.toString());
+    }
+
+    private IodxCst cstRawToken(String type, Token token) {
+        return cstTokenNode(type, token, token.toString());
+    }
+
+    private IodxCst cstStructuralToken(String type, Token token) {
+        return cstTokenNode(type, token, null);
+    }
+
+    private IodxCst cstString(String type, Token token) {
+        return cstTokenNode(type, token, token.toString());
+    }
+
+    private IodxCst cstIdentifier(Token token) {
+        return cstTokenNode("ANY_LITERAL", token, token.toString());
+    }
+
+    private IodxCst cstClass(IodxCst name, IodxCst left, IodxCst body, IodxCst right) {
+        ListAdapter<IodxCst> children = CstSupport.newList();
+        MapAdapter<String, IodxCst> fields = CstSupport.newMap();
+        IodxCst start = name == null ? left : name;
+        if (name != null) {
+            fields.put("name", name);
+            children.add(name);
+        }
+        children.add(left);
+        children.add(body);
+        children.add(right);
+        fields.put("body", body);
+        return new IodxCst(
+            name == null ? "UNNAMED_CLASS" : "NAMED_CLASS",
+            start.getBeginLine(), start.getBeginColumn(),
+            right.getEndLine(), right.getEndColumn(),
+            start.getBeginOffset(), right.getEndOffset(),
+            null, children, fields);
+    }
+
+    private IodxCst cstRequireClass(IodxCst node) {
+        if (node.getType().equals("NAMED_CLASS")) return node;
+        throw new ParseException("Expected a class, but got: " + node.getType());
+    }
+
+    private IodxCst cstTokenNode(String type, Token token, Object value) {
+        return new IodxCst(
+            type,
+            token.getBeginLine(), token.getBeginColumn(),
+            token.getEndLine(), token.getEndColumn(),
+            token.getBeginOffset(), token.getEndOffset(),
+            value, null, null);
+    }
+}

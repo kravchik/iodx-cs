@@ -1,0 +1,10 @@
+// C# entry point for the IODX CongoCC grammar.
+
+PARSER_PACKAGE = Iodx.Generated;
+JAVA_UNICODE_ESCAPE = false;
+PRESERVE_LINE_ENDINGS = true;
+TREE_BUILDING_ENABLED = false;
+
+INCLUDE "csharp/IodxCSharpSupport.inc.ccc"
+INCLUDE "common/IodxTokens.inc.ccc"
+INCLUDE "common/IodxProductions.inc.ccc"
