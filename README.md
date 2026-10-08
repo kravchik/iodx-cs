@@ -49,20 +49,19 @@ runtime usage do not require Java, Maven, CongoCC, or the Java repository.
 
 ## Parser generation
 
-The common grammar and `.iodx` fixtures are mirrored from a sibling `iodx`
-checkout. Synchronize, verify, and regenerate them with:
+The common grammar and `.iodx` fixtures are copied into this repository and
+committed. Synchronization is intentionally a separate workspace maintenance
+step, so parser generation only reads the local grammar. Regenerate and verify
+the parser with:
 
 ```shell
-scripts/sync-from-java.sh
-scripts/sync-from-java.sh --check
 scripts/generate.sh
 scripts/check-generated.sh
 ```
 
-Set `IODX_SOURCE_ROOT` when the Java repository is not at `../iodx`. Parser
-generation requires Java and Maven; CongoCC is pinned in `codegen/pom.xml`.
-Handwritten code is under `src/Iodx`, while generated code is under
-`src/Iodx/Generated` and must not be edited manually.
+Parser generation requires Java and Maven; CongoCC is pinned in
+`codegen/pom.xml`. Handwritten code is under `src/Iodx`, while generated code is
+under `src/Iodx/Generated` and must not be edited manually.
 
 Run the complete local verification, including NuGet packing, with:
 

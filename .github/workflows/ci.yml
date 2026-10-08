@@ -26,20 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: kravchik/iodx
-          path: iodx-upstream
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
           cache: maven
           cache-dependency-path: codegen/pom.xml
-      - name: Verify upstream mirror
-        run: scripts/sync-from-java.sh --check
-        env:
-          IODX_SOURCE_ROOT: ${{ github.workspace }}/iodx-upstream
       - name: Verify generated parser
         run: scripts/check-generated.sh
       - name: Verify clean worktree
